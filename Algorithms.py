@@ -38,7 +38,7 @@ class Agent:
 
         return children
 
-class BFSGAgent():
+class BFSGAgent(Agent):
     def __init__(self) -> None:
         raise NotImplementedError
 
@@ -47,7 +47,7 @@ class BFSGAgent():
         
 
 
-class GreedyAgent():
+class GreedyAgent(Agent):
   
     def __init__(self) -> None:
         raise NotImplementedError
@@ -57,7 +57,7 @@ class GreedyAgent():
 
 
 
-class AStarEpsilonAgent():
+class AStarEpsilonAgent(Agent):
     def __init__(self):
         raise NotImplementedError
         
@@ -69,7 +69,7 @@ class AStarEpsilonAgent():
 
 
 
-class AStarAgent():
+class AStarAgent(Agent):
     
     def __init__(self):
         raise NotImplementedError

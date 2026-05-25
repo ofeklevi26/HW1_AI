@@ -32,8 +32,7 @@ class BaseAgent:
         self.discovery_order_counter = 0
         self.expanded_nodes = 0
 
-    def make_node(self, state, parent=None, action=None,
-                   path_cost = 0, depth: int = 0) -> Node:
+    def make_node(self, state, parent=None, action=None, path_cost = 0, depth: int = 0) -> Node:
         return Node(
             state=state,
             parent=parent,

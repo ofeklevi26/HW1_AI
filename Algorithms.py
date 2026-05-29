@@ -1,6 +1,9 @@
 import numpy as np
+from select import select
+
 from HaifaEnv import HaifaEnv
 from typing import List, Tuple
+from collections import deque
 import heapdict
 
 class Node:
@@ -88,10 +91,38 @@ class BaseAgent:
 
 class BFSGAgent(BaseAgent):
     def __init__(self) -> None:
-        raise NotImplementedError
-
+        super().__init__()
     def search(self, env: HaifaEnv) -> Tuple[List[int], float, int]:
-        raise NotImplementedError
+        self.reset_search_counters()
+        initial_state = env.get_initial_state()
+        root = self.make_node(state=initial_state, parent= None, action= None, path_cost=0)
+
+        OPEN = deque([root])
+        OPEN_states = {initial_state}
+        CLOSE = set()
+
+        self.expand_node(root)
+
+        while len(OPEN) > 0:
+            current = OPEN.popleft()
+            OPEN_states.remove(current.state)
+
+            if self.is_goal(current, env):
+                return self.solution(current), current.path_cost, self.expanded_nodes
+
+            CLOSE.add(current.state)
+
+            children = self.expand(env, current)
+
+            for child in children:
+                if child.state not in OPEN_states and child.state not in CLOSE:
+                    self.expand_node(child)
+
+                    OPEN.append(child)
+                    OPEN_states.add(child.state)
+        return [], float('inf'), self.expanded_nodes
+
+
         
 
 

@@ -292,11 +292,11 @@ class AStarEpsilonAgent(BaseAgent):
 
 
 
-class AStarAgent(BaseAgent):
+class AStarAgent(AStarEpsilonAgent):
     
     def __init__(self):
-        raise NotImplementedError
+        super().__init__()
 
-    def search(self, env: HaifaEnv) -> Tuple[List[int], float, int]:
-        raise NotImplementedError 
+    def search(self, env: HaifaEnv, epsilon: float = None) -> Tuple[List[int], float, int]:
+        return super().search(env, epsilon=0.0)
 

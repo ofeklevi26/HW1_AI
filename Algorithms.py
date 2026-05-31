@@ -57,14 +57,9 @@ class BaseAgent:
 
     def is_valid_successor(self, new_state: int, cost: float, terminated: bool, env: HaifaEnv) -> bool:
 
-        # Holes are not valid succesors.
-
         if new_state is None or cost is None:
             return False
-        if not np.isfinite(cost):
-            return False
-        if terminated and not env.is_final_state(new_state):
-            return False
+
         return True
 
     def expand(self, env : HaifaEnv, node : Node)-> List[Node]:
@@ -107,8 +102,14 @@ class BFSGAgent(BaseAgent):
 
     def search(self, env: HaifaEnv) -> Tuple[List[int], float, int]:
         self.reset_search_counters()
+
         initial_state = env.get_initial_state()
-        root = self.make_node(state=initial_state, parent= None, action= None, path_cost=0.0)
+        root = self.make_node(
+            state=initial_state,
+            parent=None,
+            action=None,
+            path_cost=0.0
+        )
 
         OPEN = deque([root])
         OPEN_states = {initial_state}
@@ -127,6 +128,8 @@ class BFSGAgent(BaseAgent):
 
             for child in children:
                 if child.state not in OPEN_states and child.state not in CLOSE:
+                    if self.is_goal(child, env):
+                        return self.solution(child), child.path_cost, self.expanded_nodes
                     OPEN.append(child)
                     OPEN_states.add(child.state)
         return [], float('inf'), self.expanded_nodes
@@ -277,9 +280,7 @@ class AStarEpsilonAgent(BaseAgent):
             children = self.expand(env, current)
 
             for child in children:
-                old_best_g = best_g.get(child.state, float("inf"))
-
-                if child.path_cost < old_best_g:
+                if child.state not in best_g or child.path_cost < best_g[child.state]:
                     best_g[child.state] = child.path_cost
 
                     if child.state in CLOSED:

@@ -144,8 +144,7 @@ class GreedyAgent(BaseAgent):
         super().__init__()
 
     def greedy_priority(self, node: Node, env: HaifaEnv) -> Tuple[float, int]:
-        #it takes into account the heuristic and also the order of entrance to the open state list
-        return self.h_Haifa(node.state, env), node.discovery_order
+        return self.h_Haifa(node.state, env), node.state
 
     def should_add_to_open(self, node: Node, OPEN_states: set, CLOSE: set) -> bool:
         #checks if the state is already in the open list or closed list
@@ -202,8 +201,7 @@ class AStarEpsilonAgent(BaseAgent):
         return self.h_Haifa(state, self.env)
 
     def astar_priority(self, node: Node, env: HaifaEnv) -> Tuple[float, int]:
-        #it takes into account the heuristic and also the order of entrance to the open state list
-        return self.f_value(node, env), node.discovery_order
+        return self.f_value(node, env), node.state
 
     def get_f_min(self, OPEN: heapdict.heapdict) -> float:
         return min(priority[0] for priority in OPEN.values())
@@ -224,7 +222,7 @@ class AStarEpsilonAgent(BaseAgent):
         return focal
 
     def focal_priority(self, state: int, OPEN_nodes: dict) -> Tuple[float, int]:
-        return self.h_focal(state), OPEN_nodes[state].discovery_order
+        return self.h_focal(state), state
 
     def choose_from_focal(self, focal: List[int], OPEN_nodes: dict) -> int:
         best_state = focal[0]

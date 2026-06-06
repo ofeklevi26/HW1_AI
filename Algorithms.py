@@ -212,29 +212,20 @@ class AStarEpsilonAgent(BaseAgent):
     def build_focal_list(self, OPEN: heapdict.heapdict, epsilon: float) -> List[int]:
         focal = []
         f_min = self.get_f_min(OPEN)
-
-        for state, priority in OPEN.items():
+        for state, priority in sorted(OPEN.items(), key=lambda item: item[1]):
             node_f_value = priority[0]
-
             if self.is_in_focal_condition(node_f_value, f_min, epsilon):
                 focal.append(state)
-
         return focal
-
-    def focal_priority(self, state: int, OPEN_nodes: dict) -> Tuple[float, int]:
-        return self.h_focal(state), state
 
     def choose_from_focal(self, focal: List[int], OPEN_nodes: dict) -> int:
         best_state = focal[0]
-        best_priority = self.focal_priority(best_state, OPEN_nodes)
-
+        best_h = self.h_focal(best_state)
         for state in focal[1:]:
-            current_priority = self.focal_priority(state, OPEN_nodes)
-
-            if current_priority < best_priority:
+            current_h = self.h_focal(state)
+            if current_h < best_h:
                 best_state = state
-                best_priority = current_priority
-
+                best_h = current_h
         return best_state
 
     def search(self, env: HaifaEnv, epsilon: float = None) -> Tuple[List[int], float, int]:
